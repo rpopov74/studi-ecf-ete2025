@@ -1,0 +1,24 @@
+# Répertoire local Terraform
+**/.terraform/*
+
+# Fichiers de state Terraform
+*.tfstate
+*.tfstate.*
+
+# Fichiers de variables (souvent sensibles)
+*.tfvars
+*.tfvars.json
+
+# Fichiers de logs de crash
+crash.log
+crash.*.log
+
+# Fichiers d'override locaux
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Fichiers de configuration CLI
+.terraformrc
+terraform.rc
