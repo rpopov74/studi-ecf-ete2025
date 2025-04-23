@@ -57,6 +57,7 @@ resource "aws_instance" "java_ec2" {
   instance_type = var.instance_type
   subnet_id     = aws_subnet.ym_pub_subnet.id
   vpc_security_group_ids = [aws_security_group.ym_sg.id] 
+  key_name      = "ym_ssh_key"
   tags = {
     Name = "Centos10_JDK21"
   }
