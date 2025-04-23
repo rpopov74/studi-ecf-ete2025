@@ -54,8 +54,8 @@ resource "aws_instance" "java_ec2" {
   ami           = var.ami
   instance_type = var.instance_type
   subnet_id     = aws_subnet.yourmedia_subnet.id
-  security_groups = [aws_security_group.yourmedia_sg.name]
-
+  #security_groups = [aws_security_group.yourmedia_sg.name]
+  vpc_security_group_ids = [aws_security_group.yourmedia_sg.id] 
   tags = {
     Name = "Centos10_JDK21"
   }
