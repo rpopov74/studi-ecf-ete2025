@@ -12,32 +12,34 @@ provider "aws" {
   region = var.region
 }
 
-# Create a VPC
-resource "aws_vpc" "yourmedia_vpc" {
+# Create VPC
+resource "aws_vpc" "ym_vpc" {
   cidr_block = "10.0.0.0/16"
   tags = {
     Name = "YourMedia-VPC"
   }
 }
 
-# Create a Subnet
-resource "aws_subnet" "yourmedia_subnet" {
-  vpc_id     = aws_vpc.yourmedia_vpc.id
+# Create Subnet
+resource "aws_subnet" "ym_pub_subnet" {
+  vpc_id     = aws_vpc.ym_vpc.id
   cidr_block = "10.0.1.0/24"
   tags = {
-    Name = "YourMedia-Subnet"
+    Name = "YourMedia-Public-Subnet"
   }
 }
 
-# Create a Security Group
-resource "aws_security_group" "yourmedia_sg" {
-  vpc_id = aws_vpc.yourmedia_vpc.id
+# Create Security Group
+resource "aws_security_group" "ym_sg" {
+  vpc_id = aws_vpc.ym_vpc.id
+  #traffic entrant
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  #traffic sortant
   egress {
     from_port   = 0
     to_port     = 0
@@ -49,13 +51,12 @@ resource "aws_security_group" "yourmedia_sg" {
   }
 }
 
-# Create an EC2 Instance
+# Create EC2 Instance
 resource "aws_instance" "java_ec2" {
   ami           = var.ami
   instance_type = var.instance_type
-  subnet_id     = aws_subnet.yourmedia_subnet.id
-  #security_groups = [aws_security_group.yourmedia_sg.name]
-  vpc_security_group_ids = [aws_security_group.yourmedia_sg.id] 
+  subnet_id     = aws_subnet.ym_pub_subnet.id
+  vpc_security_group_ids = [aws_security_group.ym_sg.id] 
   tags = {
     Name = "Centos10_JDK21"
   }
