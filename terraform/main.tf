@@ -28,6 +28,15 @@ resource "aws_subnet" "ym_pub_subnet" {
     Name = "YourMedia-Public-Subnet"
   }
 }
+# Create an additional Subnet in another AZ
+resource "aws_subnet" "ym_pub_subnet_2" {
+  vpc_id     = aws_vpc.ym_vpc.id
+  cidr_block = "10.0.2.0/24"
+  availability_zone = "eu-west-3b" # Zone de disponibilité différente
+  tags = {
+    Name = "YourMedia-Public-Subnet-2"
+  }
+}
 
 # Create Security Group
 resource "aws_security_group" "ym_sg" {
@@ -60,5 +69,36 @@ resource "aws_instance" "java_ec2" {
   key_name      = "ym_ssh_key"
   tags = {
     Name = "Centos10_JDK21"
+  }
+}
+
+# Create RDS Instance with MariaDB
+resource "aws_db_instance" "mariadb_instance" {
+  allocated_storage    = 20
+  engine               = "mariadb"
+  engine_version       = "10.6"
+  instance_class       = "db.t3.micro"
+  db_name                 = "yourmedia_db"
+  username             = "admin"
+  password             = "password1234"
+  parameter_group_name = "default.mariadb10.6"
+  publicly_accessible  = false
+  vpc_security_group_ids = [aws_security_group.ym_sg.id] 
+  db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
+
+  tags = {
+    Name = "YourMedia-MariaDB"
+  }
+}
+
+# Create a DB Subnet Group
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name       = "yourmedia-rds-subnet-group"
+  subnet_ids = [
+    aws_subnet.ym_pub_subnet.id,
+    aws_subnet.ym_pub_subnet_2.id
+    ] 
+  tags = {
+    Name = "YourMedia-RDS-Subnet-Group"
   }
 }
