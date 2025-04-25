@@ -14,7 +14,7 @@ provider "aws" {
 
 # Create VPC
 resource "aws_vpc" "ym_vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.vpc_cidr
   tags = {
     Name = "YourMedia-VPC"
   }
@@ -35,6 +35,16 @@ resource "aws_subnet" "ym_pub_subnet_2" {
   availability_zone = "eu-west-3b" # Zone de disponibilité différente
   tags = {
     Name = "YourMedia-Public-Subnet-2"
+  }
+}
+
+# Create an additional Subnet in another AZ
+resource "aws_subnet" "ym_pub_subnet_3" {
+  vpc_id     = aws_vpc.ym_vpc.id
+  cidr_block = "10.0.3.0/24"
+  availability_zone = "eu-west-3c" # Zone de disponibilité différente
+  tags = {
+    Name = "YourMedia-Public-Subnet-3"
   }
 }
 
@@ -79,8 +89,8 @@ resource "aws_db_instance" "mariadb_instance" {
   engine_version       = "10.6"
   instance_class       = "db.t3.micro"
   db_name                 = "yourmedia_db"
-  username             = "admin"
-  password             = "password1234"
+  username             = var.db_username
+  password             = var.db_password
   parameter_group_name = "default.mariadb10.6"
   publicly_accessible  = false
   vpc_security_group_ids = [aws_security_group.ym_sg.id] 
@@ -92,14 +102,50 @@ resource "aws_db_instance" "mariadb_instance" {
   }
 }
 
-# Create a DB Subnet Group
+# Create DB Subnet Group
 resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "yourmedia-rds-subnet-group"
+  name       = "ym-rds-subnet-group"
   subnet_ids = [
     aws_subnet.ym_pub_subnet.id,
-    aws_subnet.ym_pub_subnet_2.id
+    aws_subnet.ym_pub_subnet_2.id,
+    aws_subnet.ym_pub_subnet_3.id
     ] 
   tags = {
     Name = "YourMedia-RDS-Subnet-Group"
   }
+}
+
+#Acces Internet
+
+resource "aws_internet_gateway" "ym_igw" {
+  vpc_id = aws_vpc.ym_vpc.id
+  tags = {
+    Name = "YourMedia-Internet-Gateway"
+  }
+}
+
+resource "aws_route_table" "ym_route_table" {
+  vpc_id = aws_vpc.ym_vpc.id
+  tags = {
+    Name = "YourMedia-Route-Table"
+  }
+}
+
+resource "aws_route" "ym_route" {
+  route_table_id         = aws_route_table.ym_route_table.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.ym_igw.id
+}
+
+resource "aws_route_table_association" "ym_route_table_assoc" {
+  subnet_id      = aws_subnet.ym_pub_subnet.id
+  route_table_id = aws_route_table.ym_route_table.id
+}
+
+output "ec2_public_ip" {
+  value = aws_instance.java_ec2.public_ip
+}
+
+output "rds_endpoint" {
+  value = aws_db_instance.mariadb_instance.endpoint
 }
