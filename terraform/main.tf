@@ -15,6 +15,8 @@ provider "aws" {
 # Create VPC
 resource "aws_vpc" "ym_vpc" {
   cidr_block = var.vpc_cidr
+  enable_dns_support   = true
+  enable_dns_hostnames = true
   tags = {
     Name = "YourMedia-VPC"
   }
@@ -71,11 +73,18 @@ resource "aws_security_group" "ym_sg" {
 }
 
 resource "aws_security_group" "rds_sg" {
+  vpc_id = aws_vpc.ym_vpc.id
   ingress {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [aws_security_group.ym_sg.id] # Autoriser uniquement l'EC2
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -104,7 +113,7 @@ resource "aws_db_instance" "mariadb_instance" {
   password             = var.db_password
   parameter_group_name = "default.mariadb10.6"
   publicly_accessible  = false
-  vpc_security_group_ids = [aws_security_group.ym_sg.id] 
+  vpc_security_group_ids = [aws_security_group.rds_sg.id] 
   db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
   skip_final_snapshot  = true # Désactiver le snapshot final
   
@@ -117,9 +126,8 @@ resource "aws_db_instance" "mariadb_instance" {
 resource "aws_db_subnet_group" "rds_subnet_group" {
   name       = "ym-rds-subnet-group"
   subnet_ids = [
-    aws_subnet.ym_pub_subnet.id,
-    aws_subnet.ym_pub_subnet_2.id,
-    aws_subnet.ym_pub_subnet_3.id
+    aws_subnet.ym_priv_subnet.id,
+    aws_subnet.ym_priv_subnet_2.id
     ] 
   tags = {
     Name = "YourMedia-RDS-Subnet-Group"
@@ -152,6 +160,19 @@ resource "aws_route_table_association" "ym_route_table_assoc" {
   subnet_id      = aws_subnet.ym_pub_subnet.id
   route_table_id = aws_route_table.ym_route_table.id
 }
+
+# Créer une table de routage privée
+resource "aws_route_table" "ym_priv_rt" {
+  vpc_id = aws_vpc.ym_vpc.id
+  tags = { Name = "YourMedia-Private-RT" }
+}
+
+# Associer les subnets privés
+resource "aws_route_table_association" "ym_priv_rt_assoc" {
+  subnet_id      = aws_subnet.ym_priv_subnet.id
+  route_table_id = aws_route_table.ym_priv_rt.id
+}
+
 
 output "ec2_public_ip" {
   value = aws_instance.java_ec2.public_ip
