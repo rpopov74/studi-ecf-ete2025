@@ -28,23 +28,23 @@ resource "aws_subnet" "ym_pub_subnet" {
     Name = "YourMedia-Public-Subnet"
   }
 }
-# Create an additional Subnet in another AZ
-resource "aws_subnet" "ym_pub_subnet_2" {
+# Create a private Subnet 
+resource "aws_subnet" "ym_priv_subnet" {
   vpc_id     = aws_vpc.ym_vpc.id
   cidr_block = "10.0.2.0/24"
   availability_zone = "eu-west-3b" # Zone de disponibilité différente
   tags = {
-    Name = "YourMedia-Public-Subnet-2"
+    Name = "YourMedia-Private-Subnet"
   }
 }
 
 # Create an additional Subnet in another AZ
-resource "aws_subnet" "ym_pub_subnet_3" {
+resource "aws_subnet" "ym_priv_subnet_2" {
   vpc_id     = aws_vpc.ym_vpc.id
   cidr_block = "10.0.3.0/24"
   availability_zone = "eu-west-3c" # Zone de disponibilité différente
   tags = {
-    Name = "YourMedia-Public-Subnet-3"
+    Name = "YourMedia-private-Subnet-2"
   }
 }
 
@@ -69,6 +69,16 @@ resource "aws_security_group" "ym_sg" {
     Name = "YourMedia-SG"
   }
 }
+
+resource "aws_security_group" "rds_sg" {
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ym_sg.id] # Autoriser uniquement l'EC2
+  }
+}
+
 
 # Create EC2 Instance
 resource "aws_instance" "java_ec2" {
