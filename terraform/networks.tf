@@ -49,11 +49,6 @@ resource "aws_route_table_association" "ym_route_table_assoc" {
 resource "aws_route_table" "ym_priv_rt" {
   vpc_id = aws_vpc.ym_vpc.id
   tags = { Name = "YourMedia-Private-RT" }
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.ym_nat.id  # Utiliser la passerelle NAT pour le trafic sortant
-  }
 }
 
 # Associer les subnets privés
