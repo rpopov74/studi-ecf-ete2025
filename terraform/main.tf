@@ -1,13 +1,4 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-# Configure the AWS Provider
+# Terraform configuration for AWS infrastructure
 provider "aws" {
   region = var.region
 }
@@ -21,73 +12,6 @@ resource "aws_vpc" "ym_vpc" {
     Name = "YourMedia-VPC"
   }
 }
-
-# Create Subnet
-resource "aws_subnet" "ym_pub_subnet" {
-  vpc_id     = aws_vpc.ym_vpc.id
-  cidr_block = "10.0.1.0/24"
-  tags = {
-    Name = "YourMedia-Public-Subnet"
-  }
-}
-# Create a private Subnet 
-resource "aws_subnet" "ym_priv_subnet" {
-  vpc_id     = aws_vpc.ym_vpc.id
-  cidr_block = "10.0.2.0/24"
-  availability_zone = "eu-west-3b" # Zone de disponibilité différente
-  tags = {
-    Name = "YourMedia-Private-Subnet"
-  }
-}
-
-# Create an additional Subnet in another AZ
-resource "aws_subnet" "ym_priv_subnet_2" {
-  vpc_id     = aws_vpc.ym_vpc.id
-  cidr_block = "10.0.3.0/24"
-  availability_zone = "eu-west-3c" # Zone de disponibilité différente
-  tags = {
-    Name = "YourMedia-private-Subnet-2"
-  }
-}
-
-# Create Security Group
-resource "aws_security_group" "ym_sg" {
-  vpc_id = aws_vpc.ym_vpc.id
-  #traffic entrant
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  #traffic sortant
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name = "YourMedia-SG"
-  }
-}
-
-resource "aws_security_group" "rds_sg" {
-  vpc_id = aws_vpc.ym_vpc.id
-  ingress {
-    from_port       = 3306
-    to_port         = 3306
-    protocol        = "tcp"
-    security_groups = [aws_security_group.ym_sg.id] # Autoriser uniquement l'EC2
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 
 # Create EC2 Instance
 resource "aws_instance" "java_ec2" {
@@ -120,64 +44,4 @@ resource "aws_db_instance" "mariadb_instance" {
   tags = {
     Name = "YourMedia-MariaDB"
   }
-}
-
-# Create DB Subnet Group
-resource "aws_db_subnet_group" "rds_subnet_group" {
-  name       = "ym-rds-subnet-group"
-  subnet_ids = [
-    aws_subnet.ym_priv_subnet.id,
-    aws_subnet.ym_priv_subnet_2.id
-    ] 
-  tags = {
-    Name = "YourMedia-RDS-Subnet-Group"
-  }
-}
-
-#Acces Internet
-
-resource "aws_internet_gateway" "ym_igw" {
-  vpc_id = aws_vpc.ym_vpc.id
-  tags = {
-    Name = "YourMedia-Internet-Gateway"
-  }
-}
-
-resource "aws_route_table" "ym_route_table" {
-  vpc_id = aws_vpc.ym_vpc.id
-  tags = {
-    Name = "YourMedia-Route-Table"
-  }
-}
-
-resource "aws_route" "ym_route" {
-  route_table_id         = aws_route_table.ym_route_table.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.ym_igw.id
-}
-
-resource "aws_route_table_association" "ym_route_table_assoc" {
-  subnet_id      = aws_subnet.ym_pub_subnet.id
-  route_table_id = aws_route_table.ym_route_table.id
-}
-
-# Créer une table de routage privée
-resource "aws_route_table" "ym_priv_rt" {
-  vpc_id = aws_vpc.ym_vpc.id
-  tags = { Name = "YourMedia-Private-RT" }
-}
-
-# Associer les subnets privés
-resource "aws_route_table_association" "ym_priv_rt_assoc" {
-  subnet_id      = aws_subnet.ym_priv_subnet.id
-  route_table_id = aws_route_table.ym_priv_rt.id
-}
-
-
-output "ec2_public_ip" {
-  value = aws_instance.java_ec2.public_ip
-}
-
-output "rds_endpoint" {
-  value = aws_db_instance.mariadb_instance.endpoint
 }
