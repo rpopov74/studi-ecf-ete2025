@@ -4,14 +4,12 @@ provider "aws" {
 }
 
 # Create VPC
-resource "aws_vpc" "ym_vpc" {
-  cidr_block = var.vpc_cidr
-  enable_dns_support   = true
-  enable_dns_hostnames = true
-  tags = {
-    Name = "YourMedia-VPC"
-  }
+module "vpc" {
+  source   = "./modules/vpc"
+  vpc_cidr = "10.0.0.0/16"
+  vpc_name = "YourMedia-VPC"
 }
+
 
 # Create EC2 Instance
 resource "aws_instance" "java_ec2" {
