@@ -8,7 +8,7 @@ resource "aws_eip" "nat" {
 }
 # Créer une passerelle Internet
 resource "aws_internet_gateway" "ym_igw" {
-  vpc_id = aws_vpc.ym_vpc.id
+  vpc_id = module.ym_vpc.vpc_id
   tags = {
     Name = "YourMedia-IGW"
   }
@@ -24,7 +24,7 @@ resource "aws_nat_gateway" "ym_nat" {
 }
 # Créer une table de routage publique
 resource "aws_route_table" "ym_pub_rt" {
-  vpc_id = aws_vpc.ym_vpc.id
+  vpc_id = module.ym_vpc.vpc_id
   tags = { Name = "YourMedia-Public-RT" }
 }
 
@@ -47,7 +47,7 @@ resource "aws_route_table_association" "ym_route_table_assoc" {
 
 # Créer une table de routage privée
 resource "aws_route_table" "ym_priv_rt" {
-  vpc_id = aws_vpc.ym_vpc.id
+  vpc_id = module.ym_vpc.vpc_id
   tags = { Name = "YourMedia-Private-RT" }
 }
 

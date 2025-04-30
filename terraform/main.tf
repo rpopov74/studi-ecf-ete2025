@@ -4,7 +4,7 @@ provider "aws" {
 }
 
 # Create VPC
-module "vpc" {
+module "ym_vpc" {
   source   = "./modules/vpc"
   vpc_cidr = "10.0.0.0/16"
   vpc_name = "YourMedia-VPC"

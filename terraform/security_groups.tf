@@ -1,6 +1,6 @@
 # Create Security Group
 resource "aws_security_group" "ym_sg" {
-  vpc_id = aws_vpc.ym_vpc.id
+  vpc_id = module.ym_vpc.vpc_id
   #traffic entrant
   ingress {
     from_port   = 22
@@ -20,7 +20,7 @@ resource "aws_security_group" "ym_sg" {
   }
 }
 resource "aws_security_group" "rds_sg" {
-  vpc_id = aws_vpc.ym_vpc.id
+  vpc_id = module.ym_vpc.vpc_id
   ingress {
     from_port       = 3306
     to_port         = 3306
