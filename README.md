@@ -13,7 +13,7 @@ Ce projet vise à :
 
 ```
 .
-├── terraform/ # Infrastructure as Code (Terraform) \n
+├── terraform/ # Infrastructure as Code (Terraform)
 │ ├── main.tf
 │ ├── variables.tf
 │ ├── outputs.tf
