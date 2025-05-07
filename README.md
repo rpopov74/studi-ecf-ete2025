@@ -12,7 +12,7 @@ Ce projet vise à :
 ## 🗂️ Structure du dépôt
 
 .
-├── terraform/ # Infrastructure as Code (Terraform)
+├── terraform/ # Infrastructure as Code (Terraform) \n
 │ ├── main.tf
 │ ├── variables.tf
 │ ├── outputs.tf
