@@ -1,13 +1,11 @@
 # studi-ecf-ete2025
 
-Projet DevOps de déploiement d’infrastructure et de configuration automatisée avec **Terraform** et **Ansible**.
+Projet DevOps de déploiement d’infrastructure et de configuration automatisée avec **Terraform**.
 
 ## 📋 Présentation
 
 Ce projet vise à :
 - Provisionner une infrastructure Cloud (VM, réseau, sécurité) avec **Terraform**
-- Configurer les machines déployées via **Ansible**
-- Appliquer les bonnes pratiques DevOps (modularité, sécurité, automatisation)
 
 ## 🗂️ Structure du dépôt
 
