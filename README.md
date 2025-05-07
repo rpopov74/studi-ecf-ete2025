@@ -21,20 +21,21 @@ Ce projet vise à :
 ## 🚀 Prérequis
 
 - [Terraform](https://www.terraform.io/) >= 1.0.0
-- Accès à un fournisseur Cloud compatible (ex: AWS, Azure, GCP)
+- Accès à un fournisseur Cloud
 - Clés d’API/accès pour le Cloud
 
 ## ⚙️ Déploiement
 
 ### 1. Cloner le dépôt
-
+```
 git clone https://github.com/rpopov74/studi-ecf-ete2025.git
 cd studi-ecf-ete2025
-
+```
 
 ### 2. Initialiser et appliquer Terraform
-
+```
 cd terraform
 terraform init
 terraform validate
 terrafform apply
+```
