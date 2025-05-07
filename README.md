@@ -5,7 +5,7 @@ Projet DevOps de déploiement d’infrastructure et de configuration automatisé
 ## 📋 Présentation
 
 Ce projet vise à :
-- Provisionner une infrastructure Cloud (VM, réseau, sécurité) avec **Terraform**
+- Provisionner une infrastructure Cloud (VM, réseau, sécurité, stockage) avec **Terraform**
 
 ## 🗂️ Structure du dépôt
 
