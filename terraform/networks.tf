@@ -1,7 +1,7 @@
 #Acces Internet
 
 resource "aws_eip" "nat" {
-  domain = "vpc"  # Indique que l'EIP est pour une VPC
+  domain = "vpc" # Indique que l'EIP est pour une VPC
   tags = {
     Name = "YourMedia-NAT-EIP"
   }
@@ -25,7 +25,7 @@ resource "aws_nat_gateway" "ym_nat" {
 # Créer une table de routage publique
 resource "aws_route_table" "ym_pub_rt" {
   vpc_id = module.ym_vpc.vpc_id
-  tags = { Name = "YourMedia-Public-RT" }
+  tags   = { Name = "YourMedia-Public-RT" }
 }
 
 resource "aws_route" "ym_pub_route" {
@@ -37,7 +37,7 @@ resource "aws_route" "ym_pub_route" {
 resource "aws_route" "ym_route" {
   route_table_id         = aws_route_table.ym_priv_rt.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.ym_nat.id  # Utiliser la passerelle NAT pour le trafic sortant
+  nat_gateway_id         = aws_nat_gateway.ym_nat.id # Utiliser la passerelle NAT pour le trafic sortant
 }
 
 resource "aws_route_table_association" "ym_route_table_assoc" {
@@ -48,7 +48,7 @@ resource "aws_route_table_association" "ym_route_table_assoc" {
 # Créer une table de routage privée
 resource "aws_route_table" "ym_priv_rt" {
   vpc_id = module.ym_vpc.vpc_id
-  tags = { Name = "YourMedia-Private-RT" }
+  tags   = { Name = "YourMedia-Private-RT" }
 }
 
 # Associer les subnets privés
