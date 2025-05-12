@@ -4,6 +4,7 @@
     "slug": "HelloWorldApp",
     "version": "1.0.0",
     "orientation": "portrait",
+    "platforms": ["android", "ios"],
     "icon": "./assets/images/icon.png",
     "scheme": "helloworldapp",
     "userInterfaceStyle": "automatic",
@@ -12,11 +13,13 @@
       "supportsTablet": true
     },
     "android": {
+      
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.popov2.helloworldapp"
     },
     "web": {
       "bundler": "metro",
