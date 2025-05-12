@@ -15,6 +15,6 @@ public class StudiApplication {
 
     @GetMapping("/") // Endpoint accessible à la racine
     public String helloWorld() {
-        return "Hello World!";
+        return "Hello Studi!";
     }
 }
