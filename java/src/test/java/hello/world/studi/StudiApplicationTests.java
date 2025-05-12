@@ -12,7 +12,7 @@ class StudiApplicationTests {
 	}
 	void helloWorldEndpointReturnsHelloWorld() {
         String message = "Hello World!";
-        assertThat(message).isEqualTo("Hello World!");
+        assertThat(message).isEqualTo("Hello Studi!");
     }
 
 }
