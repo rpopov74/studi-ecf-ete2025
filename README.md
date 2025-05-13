@@ -38,4 +38,16 @@ cd terraform
 terraform init
 terraform validate
 terrafform apply
+terraform destroy
 ```
+
+
+cd /home/popov/Projets/studi-ecf-ete2025/java
+
+mvn compile
+
+mvn spring-boot:run
+
+docker build -t hello-studi .
+
+docker run -p 8080:8080 hello-studi
