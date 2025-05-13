@@ -42,7 +42,7 @@ terraform destroy
 ```
 
 
-cd /home/popov/Projets/studi-ecf-ete2025/java
+cd java
 
 mvn compile
 
@@ -51,3 +51,7 @@ mvn spring-boot:run
 docker build -t hello-studi .
 
 docker run -p 8080:8080 hello-studi
+
+cd javascript/HelloWorldApp
+
+npx expo start
