@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: javascript/HelloWorldApp
 
     steps:
       - name: Checkout code
@@ -25,4 +28,4 @@ jobs:
       - name: Run EAS Build (Android)
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: eas build --platform all --non-interactive
+        run: eas build --platform android --non-interactive
