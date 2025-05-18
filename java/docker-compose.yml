@@ -1,0 +1,36 @@
+services:
+  YourMedia-app:
+    image: hello-studi:latest
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - JAVA_TOOL_OPTIONS=-javaagent:/app/jmx_prometheus_javaagent-1.0.1.jar=8081:/app/config.yaml
+    volumes:
+      - ./jmx_prometheus_javaagent-1.0.1.jar:/app/jmx_prometheus_javaagent-1.0.1.jar
+      - ./config.yaml:/app/config.yaml
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+volumes:
+  prometheus_data:
+  grafana_data:

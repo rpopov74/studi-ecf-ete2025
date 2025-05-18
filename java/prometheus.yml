@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'YourMedia-app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['YourMedia-app:8081']
