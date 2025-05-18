@@ -111,6 +111,10 @@ npx expo start
 
 Scannez le QR code affiché dans le terminal avec l'application Expo Go sur votre téléphone pour voir l'application.
 
+Lancement de l app avec la stack de supervision
+
+docker compose up -d
+
 ---
 
 ## 🛠️ Fonctionnalités
