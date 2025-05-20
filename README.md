@@ -1,14 +1,18 @@
 # studi-ecf-ete2025
 
-Projet DevOps de déploiement d’infrastructure et de configuration automatisée avec **Terraform**, **Maven**, **Docker**, et **JavaScript**.
+Projet DevOps de déploiement d’infrastructure et de configuration automatisée avec **Terraform**, **Maven**, **Docker**, **Spring Boot** et **JavaScript/Expo**.
+
+---
 
 ## 📋 Présentation
 
-Ce projet vise à :
-- Provisionner une infrastructure Cloud (VM, réseau, sécurité, stockage) avec **Terraform**.
-- Déployer une application Java avec **Spring Boot**.
-- Conteneuriser l'application avec **Docker**.
-- Lancer une application front-end avec **JavaScript** et **Expo**.
+Ce projet a pour objectif de :
+- Provisionner une infrastructure Cloud (VM, réseau, sécurité, stockage) avec **Terraform**
+- Déployer et conteneuriser une application backend Java (**Spring Boot**)
+- Lancer une application front-end (**JavaScript/Expo**)
+- Mettre en place une stack de supervision (Prometheus, Grafana, JMX Exporter)
+
+---
 
 ## 🗂️ Structure du dépôt
 
@@ -29,25 +33,26 @@ Ce projet vise à :
 └── README.md                 # Documentation du projet
 ```
 
+
+---
+
 ## 🚀 Prérequis
 
-### Outils nécessaires :
-- [Terraform](https://www.terraform.io/) >= 1.0.0
-- [Java JDK](https://www.oracle.com/java/technologies/javase-downloads.html) >= 21
-- [Maven](https://maven.apache.org/) >= 3.8.0
-- [Docker](https://www.docker.com/) >= 20.10
-- [Node.js](https://nodejs.org/) >= 16.x
-- [Expo CLI](https://expo.dev/) (installé via `npm`)
-
-### Accès requis :
-- Accès à un fournisseur Cloud AWS
-- Clés d’API/accès pour le Cloud.
+- [Terraform](https://www.terraform.io/) ≥ 1.0.0
+- [Java JDK](https://www.oracle.com/java/technologies/javase-downloads.html) ≥ 21
+- [Maven](https://maven.apache.org/) ≥ 3.8.0
+- [Docker](https://www.docker.com/) ≥ 20.10
+- [Node.js](https://nodejs.org/) ≥ 16.x
+- [Expo CLI](https://expo.dev/) (`npm install -g expo-cli`)
+- Accès à AWS (ou autre provider cloud) et clés d’API
 
 ---
 
 ## ⚙️ Déploiement
 
 ### 1. Cloner le dépôt
+
+
 ```bash
 git clone https://github.com/rpopov74/studi-ecf-ete2025.git
 cd studi-ecf-ete2025
@@ -75,6 +80,7 @@ cd java
 
 #### b) Lancer l'application Spring Boot
 ```bash
+./mvnw clean package
 ./mvnw spring-boot:run
 ```
 
@@ -109,7 +115,26 @@ npm install
 npx expo start
 ```
 
-Scannez le QR code affiché dans le terminal avec l'application Expo Go sur votre téléphone pour voir l'application.
+
+### 6. Conteneuriser et superviser avec Docker Compose
+
+```
+cd java
+
+#Pour lancer la stack (appli + supervision)
+docker compose up -d
+
+#Pour stopper la stack
+docker compose down
+```
+
+L'agent JMX Exporter est connecté sur prometheus 
+
+- **Prometheus :** [http://localhost:9090/targets](http://localhost:9090/targets)
+
+Grafana est configue avec le dashbord JVM Micrometer (4701)
+
+- **Grafana :** [http://localhost:3000](http://localhost:3000)
 
 ---
 
